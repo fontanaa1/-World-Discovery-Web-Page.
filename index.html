@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubra o Seu Mundo</title>
+    
+    <!-- Favicon com tema de globo terrestre -->
+    <link rel="icon" href="edube.org" type="image/png">
+    
+    <!-- Estilo básico para melhorar a visualização -->
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Título com Emoji de Globo Terrestre -->
+    <h1>Descubra o Seu Mundo &#x1F30D;</h1> 
+    <p>Clique no botão para descobrir em qual continente você está ou clique em uma área do mapa para aprender sobre características geográficas famosas.</p>
+    
+    <!-- Botão para funcionalidade de geolocalização -->
+    <button id="discoverLocation">Descobrir Localização</button>
+
+    <!-- Imagem do mapa com definição de áreas clicáveis (imagemap) -->
+    <img src="edube.org" usemap="#image-map" alt="Mapa Mundi Interativo">
+    
+    <!-- Definição das áreas clicáveis para cada continente -->
+    <map name="image-map">
+        <!-- Coordenadas ajustadas para corresponder à imagem de origem -->
+        <area target="" alt="América do Norte" title="América do Norte" id="north-america" coords="41,17,386,283" shape="rect" href="javascript:void(0);">
+        <area target="" alt="América do Sul" title="América do Sul" id="south-america" coords="209,288,358,501" shape="rect" href="javascript:void(0);">
+        <area target="" alt="Europa" title="Europa" id="europe" coords="391,68,505,217" shape="rect" href="javascript:void(0);">
+        <area target="" alt="África" title="África" id="africa" coords="387,217,533,448" shape="rect" href="javascript:void(0);">
+        <area target="" alt="Ásia" title="Ásia" id="asia" coords="506,1,893,153" shape="rect" href="javascript:void(0);">
+        <area target="" alt="Austrália e Oceania" title="Austrália e Oceania" id="australia-and-oceania" coords="679,353,872,480" shape="rect" href="javascript:void(0);">
+    </map>
+
+    <!-- Código JavaScript fornecido pelo colega de equipe para interatividade, agora em português -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const continentInfo = {
+        'north-america': {
+          continent: 'América do Norte',
+          river: 'Rio Mississippi',
+          mountain: 'Monte Denali',
+          landmarks: 'Grand Canyon, Estátua da Liberdade, Cataratas do Niágara'
+        },
+        'south-america': {
+          continent: 'América do Sul',
+          river: 'Rio Amazonas',
+          mountain: 'Aconcágua',
+          landmarks: 'Machu Picchu, Ilhas Galápagos'
+        },
+        'europe': {
+          continent: 'Europa',
+          river: 'Rio Danúbio',
+          mountain: 'Mont Blanc',
+          landmarks: 'Torre Eiffel, Coliseu, Acrópole de Atenas'
+        },
+        'africa': {
+          continent: 'África',
+          river: 'Rio Nilo',
+          mountain: 'Monte Kilimanjaro',
+          landmarks: 'Esfinge, Table Mountain'
+        },
+        'asia': {
+          continent: 'Ásia',
+          river: 'Rio Yangtze',
+          mountain: 'Monte Everest',
+          landmarks: 'Grande Muralha da China, Petra'
+        },
+        'australia-and-oceania': {
+          continent: 'Austrália e Oceania',
+          river: 'Rio Murray',
+          mountain: 'Mount Kosciuszko',
+          landmarks: 'Sydney Opera House, Grande Barreira de Coral, Uluru'
+        }
+      };
+
+      // Função para exibir informações em um alerta
+      function displayContinentInfo(continentId) {
+        const info = continentInfo[continentId];
+        if (info) {
+          alert(`Continente: ${info.continent}\nRio Principal: ${info.river}\nMontanha Principal: ${info.mountain}\nPontos de Referência: ${info.landmarks}`);
+        } else {
+          alert('Informação não disponível para este continente.');
+        }
+      }
+
+      // Adiciona listeners de clique para as áreas do mapa
+      document.querySelectorAll('area').forEach(area => {
+        area.addEventListener('click', function() {
+          const continentId = this.id;
+          displayContinentInfo(continentId);
+        });
+      });
+
+      // Lógica do botão de geolocalização
+      const discoverLocationButton = document.getElementById('discoverLocation');
+      
+      discoverLocationButton.addEventListener('click', () => {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            // Funcao simplificada para determinar o continente (requer permissão do usuário e é aproximada)
+            const continentId = determineContinentByGeo(latitude, longitude);
+            if (continentId) {
+              displayContinentInfo(continentId);
+            }
+          }, (error) => {
+            alert("Erro ao obter a geolocalização: " + error.message);
+          });
+        } else {
+          alert("Geolocalização não é suportada pelo seu navegador.");
+        }
+      });
+
+      // Função simplificada para mapear coordenadas para um continente (pode não ser precisa globalmente)
+      function determineContinentByGeo(latitude, longitude) {
+        if (latitude > 35 && longitude > -10 && longitude < 40) return 'europe';
+        if (latitude < 0 && longitude > -80 && longitude < -34) return 'south-america';
+        if (latitude > 0 && longitude > -130 && longitude < -70) return 'north-america';
+        if (latitude > 5 && latitude < 60 && longitude > 40 && longitude < 180) return 'asia';
+        if (latitude > -35 && latitude < 35 && longitude > 10 && longitude < 50) return 'africa';
+        if (latitude < -10 && longitude > 110 && longitude < 180) return 'australia-and-oceania';
+        
+        alert("Não foi possível determinar o continente com base na sua localização atual.");
+        return null; 
+      }
+    });
+    </script>
+
+</body>
+</html>
